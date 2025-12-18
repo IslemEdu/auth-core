@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const pool = require('../db/pool');
+const logger=require('../middleware/logger')
+
 
 const normalizeEmail = email => email.trim().toLowerCase();
 
@@ -52,7 +54,7 @@ module.exports=async(req,res)=>{
             return res.status(401).json({error:'Invalid credentials'})
         }
     }catch(err){
-        console.error('Login error:', err);
+        logger.error('Login error:', err);
         return res.status(500).json({ error: 'login failed' });
     }
 }

@@ -5,8 +5,10 @@ const me=require('./routes/me')
 const logout=require('./routes/logout')
 const pool=require('./db/pool')
 const authenticate=require('./middleware/authenticate')
-
+const {requestLogger}=require('./middleware/logger')
 const app=express();
+
+app.use(requestLogger);
 app.use(express.json());
 
 app.post('/register',register);

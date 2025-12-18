@@ -1,6 +1,6 @@
 const pool=require('../db/pool')
 const bcrypt=require('bcrypt');
-
+const logger=require('../middleware/logger')
 
 const normalizeEmail=email =>email.trim().toLowerCase();
 
@@ -21,7 +21,7 @@ module.exports=async(req,res)=>{
         if(err.code==='23505'){
             return res.status(409).json({error:'email already exists'})
         }
-        console.log('DB error',err);
+        logger.log('DB error',err);
         return res.status(500).json({error:'register failed'})
     }
 }
