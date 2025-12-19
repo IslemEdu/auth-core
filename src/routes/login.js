@@ -3,10 +3,10 @@ const crypto = require('crypto');
 const pool = require('../db/pool');
 const logger=require('../middleware/logger')
 
-
 const normalizeEmail = email => email.trim().toLowerCase();
 
 const loginAttempts=new Map();
+global.loginAttempts=loginAttempts;
 const MAX_ATTEMPTS=5;
 const WINDOW_MS=15*60*1000
 

@@ -7,6 +7,7 @@ const pool=require('./db/pool')
 const authenticate=require('./middleware/authenticate')
 const {requestLogger}=require('./middleware/logger')
 const app=express();
+const {checkDB,checkSessions,CheckRateLimit, checkRateLimit}=require('./health')
 
 app.use(requestLogger);
 app.use(express.json());
@@ -19,14 +20,21 @@ app.post('/logout',authenticate,logout)
 
 
 app.get('/health',async(req,res)=>{
-    try{
-        const result=await pool.query('SELECT COUNT (*) FROM users');
-        const userCount=parseInt(result.rows[0].count,10);
-        res.json({status:'ok',userCount})
-    }catch(err){
-        console.error('Health check DB error:', err);
-        res.status(500).json({ status: 'error', message: 'DB unreachable' });
-    }
+    const [db,sessions,rateLimit]=await Promise.all([
+        checkDB(),
+        checkSessions(),
+        Promise.resolve(checkRateLimit())
+    ]);
+
+    const status=db.ok && sessions.ok && rateLimit.ok ? 'ok' : 'degraded'
+    const code=status==='ok'?200:503;
+    res.status(code).json({
+        status,
+        timestamp:new Date().toISOString(),
+        db,
+        sessions,rateLimit
+    })
+
 })
 
 const PORT = 3000;
