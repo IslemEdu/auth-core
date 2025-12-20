@@ -9,6 +9,9 @@ const { requestLogger } = require('./middleware/logger');
 const { checkDB, checkSessions, checkRateLimit } = require('./health');
 const { cleanupExpiredSessions } = require('./cleanup');
 const logger = require('./middleware/logger');
+const debugSessions=require('./routes/debugSessions')
+const debugAuth=require('./middleware/debugAuth');
+
 
 const app = express();
 
@@ -38,6 +41,7 @@ cleanupExpiredSessions().catch(err => {
 app.use(requestLogger);
 app.use(express.json());
 
+app.get('/debug/sessions',debugAuth,debugSessions)
 app.post('/register', register);
 app.post('/login', login);
 app.get('/me', authenticate, me);
