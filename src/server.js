@@ -5,10 +5,9 @@ const me = require('./routes/me');
 const logout = require('./routes/logout');
 const pool = require('./db/pool');
 const authenticate = require('./middleware/authenticate');
-const { requestLogger } = require('./middleware/logger');
 const { checkDB, checkSessions, checkRateLimit } = require('./health');
 const { cleanupExpiredSessions } = require('./cleanup');
-const logger = require('./middleware/logger');
+const {logger,requestLogger} = require('./middleware/logger');
 const debugSessions=require('./routes/debugSessions')
 const debugAuth=require('./middleware/debugAuth');
 

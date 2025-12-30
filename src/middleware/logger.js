@@ -10,10 +10,9 @@ const logger = pino({
 });
 
 module.exports = logger;
-
-module.exports.requestLogger = (req, res, next) => {
+const requestLogger = (req, res, next) => {
   const start = Date.now();
-  const traceId = crypto.randomBytes(8).toString('hex');
+  const traceId = req.headers['x-trace-id']?req.headers['x-trace-id']:crypto.randomBytes(8).toString('hex');
   req.traceId = traceId;
 
   res.on('finish', () => {
@@ -29,3 +28,4 @@ module.exports.requestLogger = (req, res, next) => {
 
   next();
 };
+module.exports={logger,requestLogger}
